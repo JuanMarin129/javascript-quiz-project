@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   /************  HTML ELEMENTS  ************/
   // View divs
-  const quizView = document.querySelector("#quizView");
-  const endView = document.querySelector("#endView");
+  const quizView = document.querySelector("#quizView"); // Selecciona la Vista Inicial
+  const endView = document.querySelector("#endView"); // Selecciona la Vista Final
 
   // Quiz view elements
   const progressBar = document.querySelector("#progressBar");
@@ -98,19 +98,60 @@ document.addEventListener("DOMContentLoaded", () => {
     //
     // 1. Show the question
     // Update the inner text of the question container element and show the question text
+    
+    // El texto de la pregunta
+    questionContainer.innerText = question.text;
 
+    // Las respuestas disponibles que tendrá el usuario
+    
+
+
+    for (let i=0; i<question.choices.length;i++) {
+      console.log(i + " esto es la i");
+      const crearRespuesta = document.createElement("li");
+      crearRespuesta.innerHTML = `${question.choices[i]}`;
+      choiceContainer.appendChild(crearRespuesta);
+      //choiceContainer.innerHTML = `<li>${question.choices[i]}</li>`
+      //console.log(choiceContainer.innerHTML);
+    }
+
+
+
+
+    console.log(question.choices);
+    console.log(question.choices[0]);
+    console.log(question.choices[1]);
+
+    console.log(quiz);
+    console.log("Esto es el quiz");
+    console.log(question);
+    console.log("Esto es el question");
+
+  
     
     // 2. Update the green progress bar
     // Update the green progress bar (div#progressBar) width so that it shows the percentage of questions answered
     
-    progressBar.style.width = `65%`; // This value is hardcoded as a placeholder
+
+    // Sacamos el índice actual de Quiz y lo dividimos entre su longitud. Multiplicamos por 100 porque necesitamos un porcentaje.
+    let indicePreguntas = quiz.currentQuestionIndex;
+    let progreso =  (indicePreguntas / quiz.questions.length) * 100;
+    
+    // Pruebas realizadas 
+    // 0.5 * 100
+    // 0.75 * 100
+    // 0.25 * 100   
+
+
+   // Progreso de la barra
+    progressBar.style.width = `${progreso}%`; // This value is hardcoded as a placeholder
 
 
 
     // 3. Update the question count text 
     // Update the question count (div#questionCount) show the current question out of total questions
     
-    questionCount.innerText = `Question 1 of 10`; //  This value is hardcoded as a placeholder
+    questionCount.innerText = `Question 1 of ${quiz.questions.length}`; //  This value is hardcoded as a placeholder
 
 
     
