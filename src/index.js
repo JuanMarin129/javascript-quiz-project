@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const questionContainer = document.querySelector("#question");
   const choiceContainer = document.querySelector("#choices");
   const nextButton = document.querySelector("#nextButton");
+  const restartButton = document.querySelector("#restartButton");
 
   // End view elements
   const resultContainer = document.querySelector("#result");
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ),
     // Add more questions here
   ];
-  const quizDuration = 10; // 120 seconds (2 minutes)
+  const quizDuration = 120; // 120 seconds (2 minutes)
 
   /************  QUIZ INSTANCE  ************/
 
@@ -74,11 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let timer;
 
   timer = setInterval ( () => {
-    //console.log("Estamos dentro de setInterval");
-
     // Decrecentamos el timeRemaining en 1 por cada segundo que pasa
     quiz.timeRemaining -= 1;
-    console.log( quiz.timeRemaining + " Esto es el timeRemaining")
 
     // Mostramos el timeRemaining en minutos y segundos para ponerlo en el innerText de timeRemainingContainer
     let minutos = Math.floor(quiz.timeRemaining / 60)
@@ -87,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let segundos = (quiz.timeRemaining % 60).toString().padStart(2, "0");
     timeRemainingContainer.innerText = `${minutos}:${segundos}`;
     
-    // Cuando el tiempo llegue a cero
+    // Cuando el tiempo llegue a cero, clear del Interval y llamamos a showResult.
     if(quiz.timeRemaining === 0) {
       clearInterval(timer);
       showResults();
@@ -137,6 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
   /************  EVENT LISTENERS  ************/
 
   nextButton.addEventListener("click", nextButtonHandler);
+  restartButton.addEventListener("click", reiniciarQuiz);
+
 
   /************  FUNCTIONS  ************/
 
@@ -171,13 +171,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // Las respuestas disponibles que tendrá el usuario
 
     for (let i = 0; i < question.choices.length; i++) {
-      console.log(i + " esto es la i");
+      //console.log(i + " esto es la i");
+
+      // Creamos el elemento "li" junto con el elemento "input type radio"
       const crearRespuesta = document.createElement("li");
       crearRespuesta.innerHTML = `<input type="radio" name="respuesta1" value="${question.choices[i]}" />
-      <label for="1"> ${question.choices[i]}</label>`; // crearRespuesta.innerHTML = `${question.choices[i]}`;
+      <label for="1"> ${question.choices[i]}</label>`; 
+
+      // Añadimos el HTML a la parte de choice del index para mostrar todas las respuestas disponibles
       choiceContainer.appendChild(crearRespuesta);
-      //choiceContainer.innerHTML = `<li>${question.choices[i]}</li>`
-      //console.log(choiceContainer.innerHTML);
     }
 
     console.log(question.choices);
@@ -207,6 +209,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. Update the question count text
     // Update the question count (div#questionCount) show the current question out of total questions
 
+
+    // Para saber en qué pregunta estamos. Debemos añadir un +1 porque currenQuestionIndex empieza en 0
     const preguntaActual = quiz.currentQuestionIndex + 1;
 
     questionCount.innerText = `Question ${preguntaActual}  of ${quiz.questions.length}`; //  This value is hardcoded as a placeholder
@@ -232,21 +236,29 @@ document.addEventListener("DOMContentLoaded", () => {
     // YOUR CODE HERE:
 
     // 1. Get all the choice elements. You can use the `document.querySelectorAll()` method.
+
+    // Seleccinamos toda la parte de los "input" y los metemos en un NodeList
     const choicesNodeList = document.querySelectorAll("input");
     console.log(choicesNodeList);
+
+
     // 2. Loop through all the choice elements and check which one is selected
     // Hint: Radio input elements have a property `.checked` (e.g., `element.checked`).
     //  When a radio input gets selected the `.checked` property will be set to true.
     //  You can use check which choice was selected by checking if the `.checked` property is true.
 
+    // Recorremos el choicesNodeList y vemos cuál ha sido seleccionado por el usuario. 
     for (let i = 0; i < choicesNodeList.length; i++) {
       if (choicesNodeList[i].checked) {
-        console.log(`esta es la respuesta seleccionada ${choicesNodeList[i].value}`);
+        //console.log(`esta es la respuesta seleccionada ${choicesNodeList[i].value}`);
         selectedAnswer = choicesNodeList[i].value;
       }
     }
 
+    // Comprobamos si la respuesta del usuario es la correcta o no. Si lo es, hacemos +1 a correcAnswer (ver función checkAnswer)
     quiz.checkAnswer(selectedAnswer);
+
+    // Avanzamos a la siguiente posición del array de Questions, "limpiamos" pantalla y mostramos nueva pregunta
     quiz.moveToNextQuestion();
     showQuestion();
 
@@ -259,6 +271,41 @@ document.addEventListener("DOMContentLoaded", () => {
     // Show the next question by calling the function `showQuestion()`.
   }
 
+  function reiniciarQuiz() {
+
+      quizView.style.display = "block";
+      endView.style.display = "none";
+      quiz.correctAnswers = 0;
+      quiz.currentQuestionIndex = 0;
+
+      quiz.timeRemaining = quizDuration;
+
+      quiz.shuffleQuestions();
+      showQuestion();
+
+
+
+    timer = setInterval ( () => {
+    // Decrecentamos el timeRemaining en 1 por cada segundo que pasa
+    quiz.timeRemaining -= 1;
+
+    // Mostramos el timeRemaining en minutos y segundos para ponerlo en el innerText de timeRemainingContainer
+    let minutos = Math.floor(quiz.timeRemaining / 60)
+    .toString()
+    .padStart(2, "0");
+    let segundos = (quiz.timeRemaining % 60).toString().padStart(2, "0");
+    timeRemainingContainer.innerText = `${minutos}:${segundos}`;
+    
+    // Cuando el tiempo llegue a cero, clear del Interval y llamamos a showResult.
+    if(quiz.timeRemaining === 0) {
+      clearInterval(timer);
+      showResults();
+    }
+    
+  },1000) // 1 segundo
+
+  }
+
   function showResults() {
     // YOUR CODE HERE:
     //
@@ -269,6 +316,8 @@ document.addEventListener("DOMContentLoaded", () => {
     endView.style.display = "flex";
 
     // 3. Update the result container (div#result) inner text to show the number of correct answers out of total questions
+
+    // quiz.correctAnwser => cantidad de respuestas acertadas. | quiz.questions.length => cantidad total de preguntas que tiene el array questions
     resultContainer.innerText = `You scored ${quiz.correctAnswers} out of ${quiz.questions.length} correct answers!`; // This value is hardcoded as a placeholder
   }
 });
