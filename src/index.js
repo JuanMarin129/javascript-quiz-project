@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ),
     // Add more questions here
   ];
-  const quizDuration = 120; // 120 seconds (2 minutes)
+  const quizDuration = 10; // 120 seconds (2 minutes)
 
   /************  QUIZ INSTANCE  ************/
 
@@ -71,7 +71,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /************  TIMER  ************/
 
+  let timer;
 
+  timer = setInterval ( () => {
+    //console.log("Estamos dentro de setInterval");
+
+    // Decrecentamos el timeRemaining en 1 por cada segundo que pasa
+    quiz.timeRemaining -= 1;
+    console.log( quiz.timeRemaining + " Esto es el timeRemaining")
+
+    // Mostramos el timeRemaining en minutos y segundos para ponerlo en el innerText de timeRemainingContainer
+    let minutos = Math.floor(quiz.timeRemaining / 60)
+    .toString()
+    .padStart(2, "0");
+    let segundos = (quiz.timeRemaining % 60).toString().padStart(2, "0");
+    timeRemainingContainer.innerText = `${minutos}:${segundos}`;
+    
+    // Cuando el tiempo llegue a cero
+    if(quiz.timeRemaining === 0) {
+      clearInterval(timer);
+      showResults();
+    }
+    
+  },1000) // 1 segundo
 
 
 
