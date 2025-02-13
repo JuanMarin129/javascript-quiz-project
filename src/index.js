@@ -25,28 +25,64 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Array with the quiz questions
   const questions = [
-    new Question("What is 2 + 2?", ["3", "4", "5", "6"], "4", 1),
+    new Question("Samuel se parece al Xocas", ["Bastante", "Son idénticos", "Son hermanos", "Son gallegos"], "Son gallegos", 1),
     new Question(
-      "What is the capital of France?",
-      ["Miami", "Paris", "Oslo", "Rome"],
-      "Paris",
+      "¿El Poro matará algún día a Juan?",
+      ["Es posible", "No, es un Poro pacífico", "El LoL arruina tu vida", "No, fue el regalo de un amigo"],
+      "No, fue el regalo de un amigo",
       1
     ),
     new Question(
-      "Who created JavaScript?",
-      ["Plato", "Brendan Eich", "Lea Verou", "Bill Gates"],
-      "Brendan Eich",
+      "A Kurt lo que menos le gusta es...",
+      ["Madrugar", "Ducharse", "Otras mujeres", "Afeitarse"],
+      "Madrugar",
       2
     ),
     new Question(
-      "What is the mass–energy equivalence equation?",
-      ["E = mc^2", "E = m*c^2", "E = m*c^3", "E = m*c"],
-      "E = mc^2",
-      3
+      "¿Qué edad tiene Jorge?",
+      ["32 (pero no es su edad)", "37 (pero no es su edad)", "38 (pero no es su edad)", "Ninguna de las anteriores"],
+      "Ninguna de las anteriores",
+      1
     ),
+    new Question(
+      "¿Con qué tiene pesadillas Alejandro por las noches?",
+      ["Con strings", "Con arrays", "Con objetos", "Todas las anteriores"],
+      "Todas las anteriores",
+      1
+    ), 
+    new Question(
+      "¿Quién manda en casa de Samuel?",
+      ["El propio Samuel", "Sus funkos (no tiene)", "Sus peluches", "El perro"],
+      "El perro",
+      1
+    ), 
+    new Question(
+      "¿Qué cosas ha visto el Pikachu de Kurt?",
+      ["A otros Pokemon", "Nuestras caras por Zoom", "Cosas turbias", "A Kurt durmiendo"],
+      "Cosas turbias",
+      1
+    ), 
+    new Question(
+      "¿En qué ciudad viven los personajes de 'Friends'?",
+      ["Murcia", "California", "Nueva York", "Texas"],
+      "Nueva York",
+      1
+    ), 
+    new Question(
+      "¿En cuál serie sale el personaje de Walter White?",
+      ["CSI", "Breaking Bad", "Sexo en Nueva York", "Embrujadas"],
+      "Breaking Bad",
+      1
+    ), 
+    new Question(
+      "¿Cómo se llama el personaje de Hackerman en 'Kung Fury'",
+      ["Mitch Buchannon", "Neo", "Hackerman", "Cipher"],
+      "Hackerman",
+      1
+    )
     // Add more questions here
   ];
-  const quizDuration = 120; // 120 seconds (2 minutes)
+  const quizDuration = 300; // 300 seconds (5 minutes)
 
   /************  QUIZ INSTANCE  ************/
 
@@ -77,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
   timer = setInterval ( () => {
     // Decrecentamos el timeRemaining en 1 por cada segundo que pasa
     quiz.timeRemaining -= 1;
+    //console.log(quiz.timeRemaining + " esto es el timeRemaining");
 
     // Mostramos el timeRemaining en minutos y segundos para ponerlo en el innerText de timeRemainingContainer
     let minutos = Math.floor(quiz.timeRemaining / 60)
@@ -171,17 +208,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Las respuestas disponibles que tendrá el usuario
 
     for (let i = 0; i < question.choices.length; i++) {
-      //console.log(i + " esto es la i");
-
-      // Creamos el elemento "li" junto con el elemento "input type radio"
+       // Creamos el elemento "li" junto con el elemento "input type radio"
       const crearRespuesta = document.createElement("li");
-      crearRespuesta.innerHTML = `<input type="radio" name="respuesta1" value="${question.choices[i]}" />
-      <label for="1"> ${question.choices[i]}</label>`; 
+      crearRespuesta.innerHTML = `<input type="radio" name="choice" value="${question.choices[i]}" />
+      <label for=""> ${question.choices[i]}</label>`; 
 
       // Añadimos el HTML a la parte de choice del index para mostrar todas las respuestas disponibles
-      choiceContainer.appendChild(crearRespuesta);
+      choiceContainer.append(crearRespuesta);
     }
 
+    /*
     console.log(question.choices);
     console.log(question.choices[0]);
     console.log(question.choices[1]);
@@ -190,6 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Esto es el quiz");
     console.log(question);
     console.log("Esto es el question");
+    */
 
     // 2. Update the green progress bar
     // Update the green progress bar (div#progressBar) width so that it shows the percentage of questions answered
@@ -239,7 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Seleccinamos toda la parte de los "input" y los metemos en un NodeList
     const choicesNodeList = document.querySelectorAll("input");
-    console.log(choicesNodeList);
+    //console.log(choicesNodeList);
 
 
     // 2. Loop through all the choice elements and check which one is selected
@@ -279,6 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
       quiz.currentQuestionIndex = 0;
 
       quiz.timeRemaining = quizDuration;
+      clearInterval(timer);
 
       quiz.shuffleQuestions();
       showQuestion();
